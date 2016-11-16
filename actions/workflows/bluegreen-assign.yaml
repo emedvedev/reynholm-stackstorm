@@ -30,12 +30,12 @@ reynholm.bluegreen_assign:
             action: aws.r53_zone_update_a
             input:
                 zone: reynholm.ru
-                name: blue.reynholm.ru
+                name: blue.app.reynholm.ru
                 value: task(get_blue_nodes).resource_records + [ <% $.ip %> ]
 
         assign_to_green:
             action: aws.r53_zone_update_a
             input:
                 zone: reynholm.ru
-                name: green.reynholm.ru
+                name: green.app.reynholm.ru
                 value: task(get_green_nodes).resource_records + [ <% $.ip %> ]

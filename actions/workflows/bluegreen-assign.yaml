@@ -27,7 +27,7 @@ reynholm.bluegreen_assign:
             on-success:
                 - create_green: <% (len($.green) = 0) and ($.choice != 'blue') %>
                 - create_blue: <% (len($.blue) = 0) and (($.choice = 'blue') or (len($.green) > 0 and $.choice = 'balanced')) %>
-                - assign_to_green: <% (len($.green) > 0) and (($.choice = 'green') or (($.choice = 'balanced') and (len($.green) <= len($.blue))) %>
+                - assign_to_green: <% (len($.green) > 0) and (($.choice = 'green') or (($.choice = 'balanced') and (len($.green) <= len($.blue)))) %>
                 - assign_to_blue: <% (len($.blue) > 0) and (($.choice = 'blue') or (($.choice = 'balanced') and (len($.green) > len($.blue)))) %>
 
         create_blue:

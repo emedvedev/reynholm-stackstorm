@@ -1,0 +1,31 @@
+version: '2.0'
+
+reynholm.bluegreen_reroute:
+    description: Reroute the blue/green deployment.
+    type: direct
+    input:
+        force
+    tasks:
+        get_active_route:
+            action: aws.r53_zone_get_cname
+            input:
+                zone: reynholm.ru
+                name: app.reynholm.ru
+            publish:
+                old_route: <% task(get_active_route).result %>
+                new_route: <% task(get_active_route).result %>
+            on-success:
+                - check_status
+        check_status:
+            action: sensu.check_info
+            input:
+                check: "<% $.new_route %>-status"
+            on-success:
+                - reroute: <% task(check_status).result == '' %>
+                - fail: <% task(check_status).result != '' %>
+        reroute:
+            action: aws.r53_zone_set_cname
+            input:
+                zone: reynholm.ru
+                name: app.reynholm.ru
+                value: <% $.new_route %>.app.reynholm.ru

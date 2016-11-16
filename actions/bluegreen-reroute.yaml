@@ -1,0 +1,10 @@
+---
+  name: "bluegreen_reroute"
+  runner_type: "mistral-v2"
+  description: "Assign a blue/green role to the node depending on the balance."
+  entry_point: "workflows/bluegreen-reroute.yaml"
+  parameters:
+    force:
+      type: "boolean"
+      description: "Force reroute even if the deployment is failing."
+      default: false

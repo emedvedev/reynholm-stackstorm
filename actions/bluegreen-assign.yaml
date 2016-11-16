@@ -1,0 +1,10 @@
+---
+  name: "bluegreen_assign"
+  runner_type: "mistral-v2"
+  description: "Assign a blue/green role to the node depending on the balance."
+  entry_point: "workflows/node-assign-bluegreen.yaml"
+  parameters:
+    ip:
+      type: "string"
+      description: "IP of the node."
+      required: true

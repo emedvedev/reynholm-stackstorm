@@ -1,0 +1,83 @@
+version: '2.0'
+
+reynholm.node_deploy:
+    description: Deploy a node with a specific role and add it to the DNS round-robin
+    type: direct
+    input:
+        - name
+        - role
+
+    tasks:
+        report_start:
+            action: chatops.post_message
+            input:
+                channel: "gdg-demo"
+                message: "Attempting to deploy a new <% $.role %> node."
+            on-success:
+                - add_vm
+
+        add_vm:
+            action: aws.ec2_run_instances
+            input:
+                image_id: <% task(get_ami).result.result %>
+                instance_type: <% $.instance_type %>
+                subnet_id: <% task(get_subnet_id).result.result %>
+                key_name: "id_rsa_emedvedev"
+            publish:
+                ec2_id: <% task(run_instance).result.result[0].id %>
+                ec2_ip: <% task(run_instance).result.result[0].private_ip_address %>
+            on-success:
+                - add_tags
+            on-failure:
+                - report_failure
+
+        add_tags:
+            action: aws.ec2_create_tags
+            input:
+                resource_ids: <% $.ec2_id %>
+                tags: Name=<% $.hostname %>,Role=<% $.role %>
+            on-success:
+                - add_dns_entry
+            on-failure:
+                - report_failure
+
+        add_dns_entry:
+            action: aws.r53_zone_add_a
+            input:
+                name: <% $.name %>.<% $.role %>.reynholm.ru
+                value: <% $.ec2_ip %>
+                zone: reynholm.ru
+            on-success:
+                - add_to_roundrobin
+            on-failure:
+                - report_failure
+
+        assign_bluegreen:
+            action: reynholm.node_assign_bluegreen
+            input:
+                ip: <% $.ec2_ip %>
+            on-success:
+                - run_salt
+
+        run_salt:
+            action: core.remote
+            input:
+                hosts: <% $.ec2_ip %>
+                cmd: "curl https://emedvedev.github.io/reynholm-ops/provision/provision.sh | sudo bash -s -- <% $.role %>"
+            on-success:
+                - report_success
+            on-failure:
+                - report_failure
+
+        report_success:
+            action: chatops.post_message
+            input:
+                channel: "gdg-demo"
+                message: "Deployed a new <% $.role %> node at <% $.ec2_ip %>."
+                extra: {"color": "good"}
+
+        report_failure:
+            action: chatops.post_message
+            input:
+                channel: "gdg-demo"
+                message: "Failed to deploy a <% $.role %> node! Please investigate."

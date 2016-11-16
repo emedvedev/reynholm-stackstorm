@@ -1,0 +1,18 @@
+---
+  name: "node_deploy"
+  runner_type: "mistral-v2"
+  description: "Deploy a node with a given role."
+  entry_point: "workflows/node-deploy.yaml"
+  parameters:
+    name:
+      type: "string"
+      description: "Short name for the node."
+      required: true
+    role:
+      type: "string"
+      description: "Role to use when adding DNS and applying Salt."
+      default: app
+      enum:
+        - app
+        - monitoring
+        - cnc

@@ -1,0 +1,41 @@
+version: '2.0'
+
+reynholm.bluegreen_assign:
+    description: Deploy a node with a specific role and add it to the DNS round-robin
+    type: direct
+    input:
+        - ip
+
+    tasks:
+        get_blue_nodes:
+            action: aws.r53_zone_get_a
+            input:
+                zone: reynholm.ru
+                name: blue.app.reynholm.ru
+            publish:
+                blue: length(task(get_blue_nodes).resource_records)
+            on-success:
+                - get_green_nodes
+
+        get_green_nodes:
+            action: aws.r53_zone_get_a
+            input:
+                zone: reynholm.ru
+                name: green.app.reynholm.ru
+            on-success:
+                - assign_to_blue: <% $.blue <= $.green %>
+                - assign_to_green: <% $.blue > $.green %>
+
+        assign_to_blue:
+            action: aws.r53_zone_update_a
+            input:
+                zone: reynholm.ru
+                name: blue.reynholm.ru
+                value: task(get_blue_nodes).resource_records + [ <% $.ip %> ]
+
+        assign_to_green:
+            action: aws.r53_zone_update_a
+            input:
+                zone: reynholm.ru
+                name: green.reynholm.ru
+                value: task(get_green_nodes).resource_records + [ <% $.ip %> ]

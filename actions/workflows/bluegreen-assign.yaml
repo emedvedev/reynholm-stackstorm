@@ -26,9 +26,9 @@ reynholm.bluegreen_assign:
                 green: <% task(get_green_nodes).get(resource_records, []) %>
             on-success:
                 - create_green: <% (len($.green) = 0) and ($.choice != 'blue') %>
-                - create_blue: <% (len($.blue) = 0) and ((len($.green) > 0) or ($.choice == 'blue')) %>
-                - assign_to_green: <% (len($.green) > 0) and ((len($.green) <= len($.blue)) or ($.choice == 'green')) %>
-                - assign_to_blue: <% (len($.blue) > 0) and ((len($.green) > len($.blue)) or ($.choice == 'blue')) %>
+                - create_blue: <% (len($.blue) = 0) and ((len($.green) > 0) or ($.choice = 'blue')) %>
+                - assign_to_green: <% (len($.green) > 0) and ((len($.green) <= len($.blue)) or ($.choice = 'green')) %>
+                - assign_to_blue: <% (len($.blue) > 0) and ((len($.green) > len($.blue)) or ($.choice = 'blue')) %>
 
         create_blue:
             action: aws.r53_zone_add_a

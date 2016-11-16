@@ -6,6 +6,7 @@ reynholm.node_deploy:
     input:
         - name
         - role
+        - bluegreen
 
     tasks:
         report_start:
@@ -70,6 +71,7 @@ reynholm.node_deploy:
             action: reynholm.bluegreen_assign
             input:
                 ip: <% $.ec2_ip %>
+                choice: <% $.bluegreen %>
             on-success:
                 - wait_for_ssh
             on-error:

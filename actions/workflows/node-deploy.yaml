@@ -116,6 +116,6 @@ reynholm.node_deploy:
             input:
                 channel: "gdg-demo"
                 message: "Failed to deploy a new <% $.role %> node! Please investigate."
-                extra: {"color": "warning"}
+                extra: {"color": "danger"}
             on-complete:
                 - fail

@@ -62,7 +62,7 @@ reynholm.node_deploy:
                 zone: reynholm.ru
             on-success:
                 - assign_bluegreen: <% $.role = 'app' %>
-                - run_salt: <% $.role != 'app' %>
+                - wait_for_ssh: <% $.role != 'app' %>
             on-error:
                 - report_failure
 

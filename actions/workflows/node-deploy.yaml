@@ -30,6 +30,16 @@ reynholm.node_deploy:
                 ec2_ip: <% task(add_vm).result.result[0].private_ip_address %>
                 hostname: <% $.role %>-<% $.name %>.reynholm.ru
             on-success:
+                - wait_for_vm
+            on-error:
+                - report_failure
+
+        wait_for_vm:
+            action: aws.ec2_wait_for_state
+            input:
+                instance_id: <% $.ec2_id %>
+                state: running
+            on-success:
                 - add_tags
             on-error:
                 - report_failure
@@ -71,6 +81,7 @@ reynholm.node_deploy:
                 hosts: <% $.ec2_ip %>
                 username: ubuntu
                 private_key: /root/.ssh/id_rsa
+                timeout: 600
                 cmd: "curl https://emedvedev.github.io/reynholm-ops/provision/provision.sh | sudo bash -s -- <% $.role %>"
             on-success:
                 - report_success

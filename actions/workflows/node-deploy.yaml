@@ -15,6 +15,8 @@ reynholm.node_deploy:
                 message: "Attempting to deploy a new <% $.role %> node."
             on-success:
                 - add_vm
+            on-error:
+                - report_failure
 
         add_vm:
             action: aws.ec2_run_instances
@@ -28,7 +30,7 @@ reynholm.node_deploy:
                 ec2_ip: <% task(run_instance).result.result[0].private_ip_address %>
             on-success:
                 - add_tags
-            on-failure:
+            on-error:
                 - report_failure
 
         add_tags:
@@ -38,7 +40,7 @@ reynholm.node_deploy:
                 tags: Name=<% $.hostname %>,Role=<% $.role %>
             on-success:
                 - add_dns_entry
-            on-failure:
+            on-error:
                 - report_failure
 
         add_dns_entry:
@@ -49,7 +51,7 @@ reynholm.node_deploy:
                 zone: reynholm.ru
             on-success:
                 - add_to_roundrobin
-            on-failure:
+            on-error:
                 - report_failure
 
         assign_bluegreen:
@@ -66,7 +68,7 @@ reynholm.node_deploy:
                 cmd: "curl https://emedvedev.github.io/reynholm-ops/provision/provision.sh | sudo bash -s -- <% $.role %>"
             on-success:
                 - report_success
-            on-failure:
+            on-error:
                 - report_failure
 
         report_success:

@@ -40,19 +40,6 @@ reynholm.node_deploy:
                 instance_id: <% $.ec2_id %>
                 state: running
             on-success:
-                - wait_for_ssh
-            on-error:
-                - report_failure
-
-        wait_for_ssh:
-            action: linux.wait_for_ssh
-            input:
-                hostname: <% $.ec2_id %>
-                username: ubuntu
-                keyfile: /root/.ssh/id_rsa
-                ssh_timeout: 5
-                retries: 30
-            on-success:
                 - add_tags
             on-error:
                 - report_failure
@@ -83,6 +70,20 @@ reynholm.node_deploy:
             action: reynholm.bluegreen_assign
             input:
                 ip: <% $.ec2_ip %>
+            on-success:
+                - wait_for_ssh
+            on-error:
+                - report_failure
+
+        wait_for_ssh:
+            action: linux.wait_for_ssh
+            input:
+                hostname: <% $.ec2_ip %>
+                username: ubuntu
+                keyfile: /root/.ssh/id_rsa
+                ssh_timeout: 10
+                sleep_delay: 5
+                retries: 30
             on-success:
                 - run_salt
             on-error:

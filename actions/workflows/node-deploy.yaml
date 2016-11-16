@@ -86,3 +86,5 @@ reynholm.node_deploy:
             input:
                 channel: "gdg-demo"
                 message: "Failed to deploy a <% $.role %> node! Please investigate."
+            on-complete:
+                - fail

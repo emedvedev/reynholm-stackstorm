@@ -70,6 +70,7 @@ reynholm.node_deploy:
             input:
                 hosts: <% $.ec2_ip %>
                 cmd: "curl https://emedvedev.github.io/reynholm-ops/provision/provision.sh | sudo bash -s -- <% $.role %>"
+                private_key: /root/id_rsa
             on-success:
                 - report_success
             on-error:

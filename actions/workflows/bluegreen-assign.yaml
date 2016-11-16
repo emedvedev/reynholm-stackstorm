@@ -13,7 +13,7 @@ reynholm.bluegreen_assign:
                 zone: reynholm.ru
                 name: blue.reynholm.ru
             publish:
-                blue: <% task(get_blue_nodes).result.result.select($.resource_records) %>
+                blue: <% (task(get_blue_nodes).result.result[0] = null) and [] or task(get_blue_nodes).result.result[0].get('resource_records') %>
             on-success:
                 - get_green_nodes
 
@@ -23,12 +23,12 @@ reynholm.bluegreen_assign:
                 zone: reynholm.ru
                 name: green.reynholm.ru
             publish:
-                green: <% task(get_blue_nodes).result.result.select($.resource_records) %>
+                green: <% (task(get_green_nodes).result.result[0] = null) and [] or task(get_green_nodes).result.result[0].get('resource_records') %>
             on-success:
                 - create_green: <% (len($.green) = 0) and ($.choice != 'blue') %>
-                - create_blue: <% (len($.blue) = 0) and ((len($.green[0]) > 0) or ($.choice = 'blue')) %>
-                - assign_to_green: <% (len($.green) > 0) and ((len($.green[0]) <= len($.blue[0])) or ($.choice = 'green')) %>
-                - assign_to_blue: <% (len($.blue) > 0) and ((len($.green[0]) > len($.blue[0])) or ($.choice = 'blue')) %>
+                - create_blue: <% (len($.blue) = 0) and ((len($.green) > 0) or ($.choice = 'blue')) %>
+                - assign_to_green: <% (len($.green) > 0) and ((len($.green) <= len($.blue)) or ($.choice = 'green')) %>
+                - assign_to_blue: <% (len($.blue) > 0) and ((len($.green) > len($.blue)) or ($.choice = 'blue')) %>
 
         create_blue:
             action: aws.r53_zone_add_a

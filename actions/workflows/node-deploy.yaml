@@ -21,13 +21,13 @@ reynholm.node_deploy:
         add_vm:
             action: aws.ec2_run_instances
             input:
-                image_id: <% task(get_ami).result.result %>
-                instance_type: <% $.instance_type %>
-                subnet_id: <% task(get_subnet_id).result.result %>
-                key_name: "id_rsa_emedvedev"
+                image_id: ami-01f05461
+                instance_type: t2.medium
+                subnet_id: subnet-23b66654
+                key_name: id_rsa_emedvedev
             publish:
-                ec2_id: <% task(run_instance).result.result[0].id %>
-                ec2_ip: <% task(run_instance).result.result[0].private_ip_address %>
+                ec2_id: <% task(add_vm).result.result[0].id %>
+                ec2_ip: <% task(add_vm).result.result[0].private_ip_address %>
             on-success:
                 - add_tags
             on-error:
@@ -50,7 +50,7 @@ reynholm.node_deploy:
                 value: <% $.ec2_ip %>
                 zone: reynholm.ru
             on-success:
-                - add_to_roundrobin
+                - assign_bluegreen
             on-error:
                 - report_failure
 
@@ -60,6 +60,8 @@ reynholm.node_deploy:
                 ip: <% $.ec2_ip %>
             on-success:
                 - run_salt
+            on-error:
+                - report_failure
 
         run_salt:
             action: core.remote

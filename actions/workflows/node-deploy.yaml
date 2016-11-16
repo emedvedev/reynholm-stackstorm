@@ -51,7 +51,8 @@ reynholm.node_deploy:
                 value: <% $.ec2_ip %>
                 zone: reynholm.ru
             on-success:
-                - assign_bluegreen
+                - assign_bluegreen: <% $.role == 'app' %>
+                - run_salt: <% $.role != 'app' %>
             on-error:
                 - report_failure
 

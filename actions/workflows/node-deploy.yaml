@@ -115,6 +115,7 @@ reynholm.node_deploy:
             action: chatops.post_message
             input:
                 channel: "gdg-demo"
-                message: "Failed to deploy a <% $.role %> node! Please investigate."
+                message: "Failed to deploy a new <% $.role %> node! Please investigate."
+                extra: {"color": "warning"}
             on-complete:
                 - fail

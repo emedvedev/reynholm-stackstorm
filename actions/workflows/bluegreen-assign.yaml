@@ -13,7 +13,7 @@ reynholm.bluegreen_assign:
                 zone: reynholm.ru
                 name: blue.reynholm.ru
             publish:
-                blue: <% task(get_blue_nodes).select($.resource_records) %>
+                blue: <% task(get_blue_nodes).result.result.select($.resource_records) %>
             on-success:
                 - get_green_nodes
 
@@ -23,7 +23,7 @@ reynholm.bluegreen_assign:
                 zone: reynholm.ru
                 name: green.reynholm.ru
             publish:
-                green: <% task(get_blue_nodes).select($.resource_records) %>
+                green: <% task(get_blue_nodes).result.result.select($.resource_records) %>
             on-success:
                 - create_green: <% (len($.green) = 0) and ($.choice != 'blue') %>
                 - create_blue: <% (len($.blue) = 0) and ((len($.green[0]) > 0) or ($.choice = 'blue')) %>

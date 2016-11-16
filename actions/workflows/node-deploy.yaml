@@ -96,7 +96,7 @@ reynholm.node_deploy:
                 username: ubuntu
                 private_key: /root/.ssh/id_rsa
                 timeout: 600
-                cmd: "curl https://emedvedev.github.io/reynholm-ops/provision/provision.sh | sudo bash -s -- <% $.role %>"
+                cmd: "curl https://emedvedev.github.io/reynholm-ops/provision/provision.sh | sudo bash -s -- <% $.role %> <% $.name %>"
             on-success:
                 - report_success
             on-error:

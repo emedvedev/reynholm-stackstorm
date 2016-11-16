@@ -8,3 +8,11 @@
       type: "string"
       description: "IP of the node."
       required: true
+    choice:
+      type: "string"
+      description: "Manually choose blue, green, or balanced"
+      default: "balanced"
+      enum:
+        - balanced
+        - blue
+        - green

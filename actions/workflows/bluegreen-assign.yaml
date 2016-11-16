@@ -1,11 +1,11 @@
 version: '2.0'
 
 reynholm.bluegreen_assign:
-    description: Deploy a node with a specific role and add it to the DNS round-robin
+    description: Assign a node to blue/green balancing, either balanced or by choice
     type: direct
     input:
         - ip
-
+        - choice
     tasks:
         get_blue_nodes:
             action: aws.r53_zone_get_a
@@ -25,10 +25,10 @@ reynholm.bluegreen_assign:
             publish:
                 green: <% task(get_green_nodes).get(resource_records, []) %>
             on-success:
-                - create_blue: <% len($.blue) + len($.green) = 0 %>
-                - create_green: <% len($.blue) + len($.green) = 1 %>
-                - assign_to_blue: <% len($.blue) <= len($.green) %>
-                - assign_to_green: <% len($.blue) > len($.green) %>
+                - create_green: <% (len($.green) = 0) and ($.choice != 'blue') %>
+                - create_blue: <% (len($.blue) = 0) and ((len($.green) > 0) or ($.choice == 'blue')) %>
+                - assign_to_green: <% (len($.green) > 0) and ((len($.green) <= len($.blue)) or ($.choice == 'green')) %>
+                - assign_to_blue: <% (len($.blue) > 0) and ((len($.green) > len($.blue)) or ($.choice == 'blue')) %>
 
         create_blue:
             action: aws.r53_zone_add_a

@@ -21,7 +21,7 @@ reynholm.bluegreen_reroute:
             input:
                 check: "<% $.new_route %>-status"
             on-success:
-                - reroute: <% task(check_status).result == '' %>
+                - reroute: <% task(check_status).result = '' %>
                 - fail: <% task(check_status).result != '' %>
         reroute:
             action: aws.r53_zone_set_cname

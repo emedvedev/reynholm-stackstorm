@@ -14,7 +14,6 @@ reynholm.bluegreen_assign:
                 name: blue.app.reynholm.ru
             publish:
                 blue: <% task(get_blue_nodes).get(resource_records, []) %>
-                blue_count: <% length($.blue) %>
             on-success:
                 - get_green_nodes
 
@@ -25,10 +24,9 @@ reynholm.bluegreen_assign:
                 name: green.app.reynholm.ru
             publish:
                 green: <% task(get_green_nodes).get(resource_records, []) %>
-                green_count: <% length($.green) %>
             on-success:
-                - assign_to_blue: <% $.blue_count <= $.green_count %>
-                - assign_to_green: <% $.blue_count > $.green_count %>
+                - assign_to_blue: <% length($.blue) <= length($.green) %>
+                - assign_to_green: <% length($.blue) > length($.green) %>
 
         assign_to_blue:
             action: aws.r53_zone_update_a

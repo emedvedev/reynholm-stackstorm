@@ -11,7 +11,7 @@ reynholm.bluegreen_assign:
             action: aws.r53_zone_get_a
             input:
                 zone: reynholm.ru
-                name: blue.app.reynholm.ru
+                name: blue.reynholm.ru
             publish:
                 blue: <% task(get_blue_nodes).get(resource_records, []) %>
             on-success:
@@ -21,7 +21,7 @@ reynholm.bluegreen_assign:
             action: aws.r53_zone_get_a
             input:
                 zone: reynholm.ru
-                name: green.app.reynholm.ru
+                name: green.reynholm.ru
             publish:
                 green: <% task(get_green_nodes).get(resource_records, []) %>
             on-success:
@@ -34,26 +34,26 @@ reynholm.bluegreen_assign:
             action: aws.r53_zone_add_a
             input:
                 zone: reynholm.ru
-                name: blue.app.reynholm.ru
+                name: blue.reynholm.ru
                 value: <% $.ip %>
 
         create_green:
             action: aws.r53_zone_add_a
             input:
                 zone: reynholm.ru
-                name: green.app.reynholm.ru
+                name: green.reynholm.ru
                 value: <% $.ip %>
 
         assign_to_blue:
             action: aws.r53_zone_update_a
             input:
                 zone: reynholm.ru
-                name: blue.app.reynholm.ru
+                name: blue.reynholm.ru
                 value: <% $.blue %> + [ <% $.ip %> ]
 
         assign_to_green:
             action: aws.r53_zone_update_a
             input:
                 zone: reynholm.ru
-                name: green.app.reynholm.ru
+                name: green.reynholm.ru
                 value: <% $.green %> + [ <% $.ip %> ]

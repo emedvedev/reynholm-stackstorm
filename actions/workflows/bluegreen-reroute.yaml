@@ -10,7 +10,7 @@ reynholm.bluegreen_reroute:
             action: aws.r53_zone_get_cname
             input:
                 zone: reynholm.ru
-                name: app.reynholm.ru
+                name: reynholm.ru
             publish:
                 old_route: <% task(get_active_route).result %>
                 new_route: <% task(get_active_route).result %>
@@ -27,5 +27,5 @@ reynholm.bluegreen_reroute:
             action: aws.r53_zone_set_cname
             input:
                 zone: reynholm.ru
-                name: app.reynholm.ru
-                value: <% $.new_route %>.app.reynholm.ru
+                name: reynholm.ru
+                value: <% $.new_route %>.reynholm.ru

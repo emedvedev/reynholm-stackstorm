@@ -31,14 +31,14 @@ reynholm.bluegreen_assign:
                 - assign_to_green: <% len($.blue) > len($.green) %>
 
         create_blue:
-            action: aws.r53_zone_create_a
+            action: aws.r53_zone_add_a
             input:
                 zone: reynholm.ru
                 name: blue.app.reynholm.ru
                 value: <% $.ip %>
 
         create_green:
-            action: aws.r53_zone_create_a
+            action: aws.r53_zone_add_a
             input:
                 zone: reynholm.ru
                 name: green.app.reynholm.ru

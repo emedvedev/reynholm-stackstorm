@@ -36,6 +36,8 @@ reynholm.bluegreen_assign:
                 zone: reynholm.ru
                 name: blue.reynholm.ru
                 value: <% $.ip %>
+            publish:
+                assignment: blue
 
         create_green:
             action: aws.r53_zone_add_a
@@ -43,6 +45,8 @@ reynholm.bluegreen_assign:
                 zone: reynholm.ru
                 name: green.reynholm.ru
                 value: <% $.ip %>
+            publish:
+                assignment: green
 
         assign_to_blue:
             action: aws.r53_zone_update_a
@@ -50,6 +54,8 @@ reynholm.bluegreen_assign:
                 zone: reynholm.ru
                 name: blue.reynholm.ru
                 value: <% $.blue %> + [ <% $.ip %> ]
+            publish:
+                assignment: blue
 
         assign_to_green:
             action: aws.r53_zone_update_a
@@ -57,3 +63,5 @@ reynholm.bluegreen_assign:
                 zone: reynholm.ru
                 name: green.reynholm.ru
                 value: <% $.green %> + [ <% $.ip %> ]
+            publish:
+                assignment: green

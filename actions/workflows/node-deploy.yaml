@@ -13,7 +13,7 @@ reynholm.node_deploy:
             action: chatops.post_message
             input:
                 channel: "gdg-demo"
-                message: "Attempting to deploy a new <% $.role %> node."
+                message: "Attempting to deploy a new <% $.role %> node.{~}"
             on-success:
                 - add_vm
             on-error:
@@ -30,6 +30,7 @@ reynholm.node_deploy:
                 ec2_id: <% task(add_vm).result.result[0].id %>
                 ec2_ip: <% task(add_vm).result.result[0].private_ip_address %>
                 hostname: <% $.name %>.<% $.role %>.reynholm.ru
+                assignment: ""
             on-success:
                 - wait_for_vm
             on-error:
@@ -72,6 +73,8 @@ reynholm.node_deploy:
             input:
                 ip: <% $.ec2_ip %>
                 choice: <% $.bluegreen %>
+            publish:
+                assignment: <% task(assign_bluegreen).result.assignment %>
             on-success:
                 - wait_for_ssh
             on-error:
@@ -108,14 +111,29 @@ reynholm.node_deploy:
             action: chatops.post_message
             input:
                 channel: "gdg-demo"
-                message: "Deployed a new <% $.role %> node at <% $.ec2_ip %>."
-                extra: {"color": "good"}
+                message: >
+                    Deployed a new `<% $.role %>` node at `<% $.ec2_ip %>`.
+                    <% $.assignment %>
+                extra:
+                    color: good
+                    slack:
+                        title: "Reynholm Deployment Report"
+                        footer: "Reynholm Industries: if you're not sexy, we don't want you working here."
+                        footer_icon: "https://lh6.googleusercontent.com/-WyTvGZZU45w/AAAAAAAAAAI/AAAAAAAAABk/5PJECwudHbU/photo.jpg"
 
         report_failure:
             action: chatops.post_message
             input:
                 channel: "gdg-demo"
-                message: "Failed to deploy a new <% $.role %> node! Please investigate."
-                extra: {"color": "danger"}
+                message: >
+                    Attention!
+                    Failed to deploy a new `<% $.role %>` node!
+                    Please investigate.
+                extra:
+                    color: danger
+                    slack:
+                        title: "Reynholm Deployment Report"
+                        footer: "Reynholm Industries: if you're not sexy, we don't want you working here."
+                        footer_icon: "https://lh6.googleusercontent.com/-WyTvGZZU45w/AAAAAAAAAAI/AAAAAAAAABk/5PJECwudHbU/photo.jpg"
             on-complete:
                 - fail

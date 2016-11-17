@@ -53,7 +53,7 @@ reynholm.bluegreen_assign:
             input:
                 zone: reynholm.ru
                 name: blue.reynholm.ru
-                value: <% $.blue %> + [ <% $.ip %> ]
+                value: <% $.blue + [ $.ip ] %>
             publish:
                 assignment: blue
 
@@ -62,6 +62,6 @@ reynholm.bluegreen_assign:
             input:
                 zone: reynholm.ru
                 name: green.reynholm.ru
-                value: <% $.green %> + [ <% $.ip %> ]
+                value: <% $.green + [ $.ip ] %>
             publish:
                 assignment: green

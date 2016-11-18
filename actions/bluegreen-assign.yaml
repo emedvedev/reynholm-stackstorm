@@ -1,7 +1,7 @@
 ---
   name: "bluegreen_assign"
   runner_type: "mistral-v2"
-  description: "Assign a blue/green role to the node depending on the balance."
+  description: "Assign a node to one of the deployment clusters."
   entry_point: "workflows/bluegreen-assign.yaml"
   parameters:
     ip:

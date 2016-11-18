@@ -19,7 +19,7 @@
     bluegreen:
       type: "string"
       description: "Deployment for app nodes: blue, green, balanced"
-      default: "balanced"
+      default: "green"
       enum:
         - balanced
         - blue

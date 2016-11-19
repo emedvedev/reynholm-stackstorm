@@ -25,7 +25,7 @@ reynholm.update_and_reroute:
         github_update:
             action: core.remote
             input:
-                hosts: ",".join(<% $.hostnames %>)
+                hosts: <% ",".join($.hostnames) %>
                 cmd: |
                     cd /var/reynholm-app
                     && git reset --hard

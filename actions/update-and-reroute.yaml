@@ -3,4 +3,3 @@
   runner_type: "mistral-v2"
   description: "Update the app and reroute the blue/green deployment."
   entry_point: "workflows/update-and-reroute.yaml"
-  parameters:

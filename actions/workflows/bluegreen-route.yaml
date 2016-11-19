@@ -10,11 +10,10 @@ reynholm.bluegreen_route:
             action: st2.kv.get
             input:
                 key: current_route
-            publish:
-                current_route: <% task(check_route).result.result  %>
             on-success:
-                - create_route: <% $.current_route = null %>
-                - reroute: <% $.current_route != null %>
+                - reroute
+            on-failure:
+                - create_route
         create_route:
             action: aws.r53_zone_add_cname
             input:

@@ -1,0 +1,21 @@
+version: '2.0'
+
+reynholm.bluegreen_route:
+    description: Route the blue/green deployment.
+    type: direct
+    input:
+        - route
+    tasks:
+        reroute:
+            action: aws.r53_zone_set_cname
+            input:
+                zone: reynholm.ru
+                name: reynholm.ru
+                value: <% $.route %>.reynholm.ru
+            on-success:
+                - memorize_route
+        memorize_route:
+            action: st2.kv.set
+            input:
+                key: current_route
+                value: <% $.route %>

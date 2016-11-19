@@ -1,0 +1,14 @@
+---
+  name: "bluegreen_route"
+  runner_type: "mistral-v2"
+  description: "Route the blue/green deployment."
+  entry_point: "workflows/bluegreen-route.yaml"
+  parameters:
+    route:
+      type: string
+      description: "Blue or green"
+      required: true
+      enum:
+        - green
+        - blue
+      default: green

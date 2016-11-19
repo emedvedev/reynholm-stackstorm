@@ -1,0 +1,11 @@
+---
+    name: "deploy_on_commit"
+    pack: "reynholm"
+    description: "Launch the app deployment workflow after GitHub commits."
+    enabled: true
+    trigger:
+        type: "core.st2.webhook"
+        parameters:
+            url: "github"
+    action:
+        ref: "reynholm.update_and_reroute"

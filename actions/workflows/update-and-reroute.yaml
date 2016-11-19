@@ -1,0 +1,37 @@
+version: '2.0'
+
+reynholm.update_and_reroute:
+    description: Update the app and reroute the blue/green deployment.
+    type: direct
+    input:
+    tasks:
+        remember_route:
+            action: st2.kv.get
+            input:
+                key: current_route
+            publish:
+                route: <% task(remember_route).result.result
+                alternate: <% task(remember_route).result.result = 'green' and 'blue' or 'green' %>
+            on-success:
+                - get_hosts
+        get_hosts:
+            action: aws.r53_zone_get_a
+            input:
+                name: <% $.alternate %>.reynholm.ru
+                zone: reynholm.ru
+            publish:
+                hostnames: task(get_hosts).result.result[0].get('resource_records')
+            on-success:
+                - github_update
+        github_update:
+            action: core.remote
+            input:
+                hostname: <% $.hostnames %>
+                cmd: "cd /var/reynholm-app && git reset --hard && git pull origin master && sed s/<!-- PLACEHOLDER -->/This is <% $.alternate %>/g index.html > index.html"
+            on-success: reroute
+        reroute:
+            action: aws.r53_zone_set_cname
+            input:
+                zone: reynholm.ru
+                name: reynholm.ru
+                value: <% $.alternate %>.reynholm.ru

@@ -32,16 +32,6 @@ reynholm.node_deploy:
                 hostname: <% $.name %>.<% $.role %>.reynholm.ru
                 assignment: ""
             on-success:
-                - wait_for_vm
-            on-error:
-                - report_failure
-
-        wait_for_vm:
-            action: aws.ec2_wait_for_state
-            input:
-                instance_id: <% $.ec2_id %>
-                state: running
-            on-success:
                 - add_tags
             on-error:
                 - report_failure
@@ -56,8 +46,8 @@ reynholm.node_deploy:
             on-error:
                 - report_failure
 
-        add_dns_entry:
-            action: aws.r53_zone_add_a
+            add_dns_entry:
+                action: aws.r53_zone_add_a
             input:
                 name: <% $.hostname %>
                 value: <% $.ec2_ip %>
@@ -118,7 +108,7 @@ reynholm.node_deploy:
                     color: good
                     slack:
                         title: "Reynholm Deployment Report"
-                        footer: "Reynholm Industries: if you're not sexy, we don't want you working here."
+                        footer: 'Reynholm Industries. Have you tried turning it off and on again?'
                         footer_icon: "https://lh6.googleusercontent.com/-WyTvGZZU45w/AAAAAAAAAAI/AAAAAAAAABk/5PJECwudHbU/photo.jpg"
 
         report_failure:
@@ -128,7 +118,7 @@ reynholm.node_deploy:
                 message: >
                     Attention!
                     Failed to deploy a new `<% $.role %>` node!
-                    Please investigate.
+                    Have you tried turning everything off and on again?
                 extra:
                     color: danger
                     slack:

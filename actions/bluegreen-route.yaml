@@ -8,7 +8,7 @@
       type: string
       description: "Blue or green"
       required: true
+      default: green
       enum:
         - green
         - blue
-      default: green

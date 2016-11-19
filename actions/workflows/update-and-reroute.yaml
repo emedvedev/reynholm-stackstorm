@@ -19,13 +19,13 @@ reynholm.update_and_reroute:
                 name: <% $.alternate %>.reynholm.ru
                 zone: reynholm.ru
             publish:
-                hostnames: task(get_hosts).result.result[0].get('resource_records')
+                hostnames: <% $.task(get_hosts).result.result[0].get('resource_records') %>
             on-success:
                 - github_update
         github_update:
             action: core.remote
             input:
-                hostname: <% $.hostnames %>
+                hosts: <% $.hostnames %>
                 cmd: |
                     cd /var/reynholm-app
                     && git reset --hard

@@ -26,11 +26,14 @@ reynholm.update_and_reroute:
             action: core.remote
             input:
                 hosts: <% ",".join($.hostnames) %>
+                username: ubuntu
+                private_key: /root/.ssh/id_rsa
+                timeout: 600
                 cmd: |
                     cd /var/reynholm-app
                     && git reset --hard
                     && git pull origin master
-                    && sed s/<!-- PLACEHOLDER -->/This is the <% $.alternate %> cluster./g index.html > index.html"
+                    && sed s/<!-- PLACEHOLDER -->/This is the <% $.alternate %> cluster./g index.html > index.html
             on-success: reroute
         reroute:
             action: reynholm.bluegreen_route

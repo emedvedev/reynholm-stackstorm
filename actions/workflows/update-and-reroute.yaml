@@ -31,9 +31,9 @@ reynholm.update_and_reroute:
                 timeout: 600
                 cmd: |
                     cd /var/reynholm-app
-                    && git reset --hard
-                    && git pull origin master
-                    && sed s/<!-- PLACEHOLDER -->/This is the <% $.alternate %> cluster./g index.html > index.html
+                    sudo git reset --hard
+                    sudo git pull origin master
+                    sudo sed -i 's/<!-- PLACEHOLDER -->/This is the <% $.alternate %> cluster./g' index.html
             on-success: reroute
         reroute:
             action: reynholm.bluegreen_route

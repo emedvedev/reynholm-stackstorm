@@ -12,7 +12,7 @@ reynholm.bluegreen_route:
                 key: current_route
             on-success:
                 - reroute
-            on-failure:
+            on-error:
                 - create_route
         create_route:
             action: aws.r53_zone_add_cname
